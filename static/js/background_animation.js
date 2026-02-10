@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         metalness: 0.1,
         roughness: 0.1,
         transmission: 0.95, // Glass
-        thickness: 0.2,
+        // thickness: 0.2, // Removed due to version compatibility
         ior: 1.5,
         clearcoat: 1.0,
         side: THREE.DoubleSide

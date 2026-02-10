@@ -1,51 +1,82 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- Mobile Menu Toggle ---
-    const mobileToggle = document.querySelector('.mobile-toggle');
-    const navLinks = document.querySelector('.nav-links');
+    // --- Mobile Drawer Logic (Split System) ---
+    const menuBtn = document.getElementById('menu-btn');
+    const mobileDrawer = document.getElementById('mobile-drawer');
+    const closeBtn = document.getElementById('close-drawer');
 
-    if (mobileToggle) {
-        mobileToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            const icon = mobileToggle.querySelector('i');
-            if (navLinks.classList.contains('active')) {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-times');
-            } else {
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
+    function toggleDrawer(show) {
+        if (show) {
+            mobileDrawer.classList.add('active');
+            document.body.classList.add('menu-open');
+        } else {
+            mobileDrawer.classList.remove('active');
+            document.body.classList.remove('menu-open');
+        }
+    }
+
+    if (menuBtn && mobileDrawer) {
+        // Open
+        menuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleDrawer(true);
+        });
+
+        // Close Button
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                toggleDrawer(false);
+            });
+        }
+
+        // Close on Outside Click
+        document.addEventListener('click', (e) => {
+            if (mobileDrawer.classList.contains('active') &&
+                !mobileDrawer.contains(e.target) &&
+                !menuBtn.contains(e.target)) {
+                toggleDrawer(false);
             }
+        });
+
+        // Close on Link Click (Optional, for better UX)
+        const drawerLinks = mobileDrawer.querySelectorAll('a');
+        drawerLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                toggleDrawer(false);
+            });
         });
     }
 
-    // --- Dark/Light Mode Toggle ---
-    const themeBtn = document.getElementById('theme-btn');
+    // --- Dark/Light Mode Toggle (Universal) ---
+    const themeBtns = document.querySelectorAll('#theme-btn, .theme-btn-mobile, .theme-btn-mobile-nav');
     const html = document.documentElement;
-    const themeIcon = themeBtn.querySelector('i');
 
     // Check LocalStorage
     const savedTheme = localStorage.getItem('theme') || 'dark';
     html.setAttribute('data-theme', savedTheme);
-    updateThemeIcon(savedTheme);
+    updateThemeIcons(savedTheme);
 
-    if (themeBtn) {
-        themeBtn.addEventListener('click', () => {
+    themeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
             const currentTheme = html.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             html.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
-            updateThemeIcon(newTheme);
+            updateThemeIcons(newTheme);
         });
-    }
+    });
 
-    function updateThemeIcon(theme) {
-        if (theme === 'dark') {
-            themeIcon.classList.remove('fa-moon');
-            themeIcon.classList.add('fa-sun');
-        } else {
-            themeIcon.classList.remove('fa-sun');
-            themeIcon.classList.add('fa-moon');
-        }
+    function updateThemeIcons(theme) {
+        themeBtns.forEach(btn => {
+            const icon = btn.querySelector('i');
+            if (theme === 'dark') {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
     }
 
     // --- Intersection Observer for Animations ---

@@ -7,6 +7,7 @@
     <title>{% block title %}RR Light House{% endblock %}</title>
     <meta name="description"
         content="RR Light House - Your one-stop shop for LED lights, decorative lighting, switches, and electrical accessories in Pernambut.">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/chandelier.png') }}">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -67,10 +68,9 @@
     <nav class="navbar" id="navbar">
         <div class="container nav-container">
             <a href="{{ url_for('home') }}" class="logo">RR Light House <i class="fa-solid fa-bolt"></i></a>
-            <button class="mobile-toggle" aria-label="Toggle navigation">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <ul class="nav-links">
+
+            <!-- Desktop Menu -->
+            <ul class="desktop-menu">
                 <li><a href="{{ url_for('home') }}">Home</a></li>
                 <li><a href="{{ url_for('about') }}">About</a></li>
                 <li><a href="{{ url_for('products') }}">Products</a></li>
@@ -87,8 +87,39 @@
                     </button>
                 </li>
             </ul>
+
+            <!-- Mobile Toggle -->
+            <div class="mobile-controls">
+                <button class="theme-btn-mobile-nav" aria-label="Toggle Dark Mode">
+                    <i class="fa-solid fa-sun"></i>
+                </button>
+                <button class="mobile-toggle" id="menu-btn" aria-label="Toggle navigation">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
         </div>
     </nav>
+
+    <!-- Mobile Drawer (Separate) -->
+    <div id="mobile-drawer">
+        <div class="drawer-header">
+            <span class="drawer-title">RR Light House</span>
+            <button id="close-drawer" aria-label="Close Menu">&times;</button>
+        </div>
+        <ul class="mobile-links">
+            <li><a href="{{ url_for('home') }}">Home</a></li>
+            <li><a href="{{ url_for('about') }}">About</a></li>
+            <li><a href="{{ url_for('products') }}">Products</a></li>
+            <li><a href="{{ url_for('services') }}">Services</a></li>
+            <li><a href="{{ url_for('contact') }}">Contact</a></li>
+            <li><a href="{{ url_for('admin') }}">Admin Login <i class="fa-solid fa-user-shield"></i></a></li>
+            <li class="mobile-theme-item">
+                <button class="theme-btn-mobile" aria-label="Toggle Dark Mode">
+                    <span>Theme</span> <i class="fa-solid fa-sun"></i>
+                </button>
+            </li>
+        </ul>
+    </div>
 
     <!-- Main Content -->
     <main>

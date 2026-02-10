@@ -37,6 +37,11 @@ def login_required(f):
     return decorated_function
 
 # --- Standard Routes ---
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static', 'images'),
+                               'chandelier.png', mimetype='image/vnd.microsoft.icon')
+
 @app.route('/')
 def home():
     return render_template('home.html')
