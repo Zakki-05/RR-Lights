@@ -31,124 +31,7 @@
     </div>
 </section>
 
-<style>
-    .page-header {
-        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
-        url('{{ url_for("static", filename="images/header-bg.png") }}');
-        background-size: cover;
-        background-position: center;
-        color: white;
-        text-align: center;
-        padding: 4rem 1rem;
-        margin-bottom: 2rem;
-    }
 
-    .products-controls {
-        display: flex;
-        gap: 1rem;
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .products-controls select,
-    .products-controls input {
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        font-family: inherit;
-        min-width: 200px;
-        background: var(--card-bg);
-        color: var(--text-color);
-    }
-
-    .product-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 2rem;
-        padding-bottom: 4rem;
-    }
-
-    .product-card {
-        background: var(--card-bg);
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: var(--shadow);
-        transition: transform 0.3s ease;
-        border: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .product-card:hover {
-        transform: translateY(-5px);
-    }
-
-    .product-img {
-        height: 200px;
-        background: #ccc;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #555;
-        font-size: 3rem;
-        overflow: hidden;
-    }
-
-    .product-img img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .product-info {
-        padding: 1.5rem;
-    }
-
-    .product-cat {
-        font-size: 0.8rem;
-        color: var(--primary);
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        margin-bottom: 0.5rem;
-        display: block;
-    }
-
-    .product-info h3 {
-        margin-bottom: 0.5rem;
-        font-size: 1.2rem;
-    }
-
-    .product-desc {
-        font-size: 0.9rem;
-        color: #8892b0;
-        margin-bottom: 1rem;
-        height: 3.6rem;
-        /* Limit roughly 3 lines */
-        overflow: hidden;
-    }
-
-    .whatsapp-btn {
-        display: block;
-        background-color: #25D366;
-        color: white;
-        text-align: center;
-        padding: 10px;
-        border-radius: 5px;
-        font-weight: 600;
-    }
-
-    .whatsapp-btn:hover {
-        background-color: #128C7E;
-        color: white;
-    }
-
-    .loader {
-        grid-column: 1 / -1;
-        text-align: center;
-        padding: 2rem;
-        font-size: 1.2rem;
-        color: var(--primary);
-    }
-</style>
 
 {% endblock %}
 
@@ -159,6 +42,10 @@
         const categorySelect = document.getElementById('category-filter');
         const searchInput = document.getElementById('search-input');
 
+        // State
+        let currentProducts = [];
+        let currentCartItems = [];
+
         // Fetch products
         async function loadProducts() {
             grid.innerHTML = '<div class="loader">Loading products...</div>';
@@ -168,26 +55,64 @@
 
             try {
                 const response = await fetch(`/api/products?category=${encodeURIComponent(category)}&search=${encodeURIComponent(search)}`);
-                const products = await response.json();
-                renderProducts(products);
+                currentProducts = await response.json();
+
+                // Trigger cart refresh to get latest items, which will trigger render via event
+                if (window.refreshCartState) {
+                    await window.refreshCartState();
+                } else {
+                    renderProducts(); // Fallback if cart.js not ready
+                }
             } catch (error) {
                 grid.innerHTML = '<p style="text-align:center; color:red;">Failed to load products. Please try again.</p>';
             }
         }
 
-        function renderProducts(products) {
+        // Listen for Cart Updates to re-render buttons
+        document.addEventListener('cartUpdated', (e) => {
+            currentCartItems = e.detail;
+            renderProducts();
+        });
+
+        function renderProducts() {
+            const products = currentProducts;
             if (products.length === 0) {
                 grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">No products found.</p>';
                 return;
             }
 
+            // Map cart quantities
+            const cartMap = {};
+            currentCartItems.forEach(item => {
+                // Ensure ID types match (string vs int)
+                // Cart item doesn't have product_id directly in the view from API?
+                // API /api/cart returns: {id, quantity, name...} but seemingly not product_id?
+                // Wait, /api/cart query: SELECT c.id, c.quantity... NO, it selects p.* info.
+                // It does NOT select product_id. I need to fix backend or rely on Name.
+                // Actually I should fix backend API to return product_id.
+                // Assuming it returns product_id if I fix query.
+                // Wait, the API code: SELECT c.id, c.quantity, p.name... 
+                // It selects c.id (cart item id). It needs c.product_id.
+                // I will Assume I will fix API in next step.
+                // For now, I'll match by Name if needed, but ID is better.
+                // Let's assume the API returns product_id (I'll add it).
+                if (item.product_id) cartMap[item.product_id] = item.quantity;
+            });
+
             grid.innerHTML = products.map(p => {
-                // Determine image path
                 let imgHtml = '<i class="fa-solid fa-box-open"></i>';
                 if (p.image_url) {
-                    // Check if it's a full URL or relative path
                     const imgSrc = p.image_url.startsWith('http') ? p.image_url : `/static/${p.image_url}`;
                     imgHtml = `<img src="${imgSrc}" alt="${p.name}">`;
+                }
+
+                const qty = cartMap[p.id] || 0;
+                let btnContent = '<i class="fa-solid fa-cart-plus"></i> Add';
+                let btnClass = 'btn-sm btn-add-cart add-to-cart-btn';
+
+                if (qty > 0) {
+                    btnContent = `<i class="fa-solid fa-check"></i> Added (${qty})`;
+                    btnClass += ' added';
                 }
 
                 return `
@@ -199,24 +124,40 @@
                     <span class="product-cat">${p.category}</span>
                     <h3>${p.name}</h3>
                     <p class="product-desc">${p.description || ''}</p>
-                    <a href="https://wa.me/919876543210?text=Hi, I am interested in ${encodeURIComponent(p.name)}" target="_blank" class="whatsapp-btn">
-                        <i class="fa-brands fa-whatsapp"></i> Enquire Now
-                    </a>
+                    <div class="product-actions">
+                        <button class="${btnClass}" data-id="${p.id}">
+                            ${btnContent}
+                        </button>
+                        <a href="https://wa.me/919443324151?text=Hi, I want to buy ${encodeURIComponent(p.name)}" target="_blank" class="btn-sm btn-whatsapp-buy">
+                            <i class="fa-brands fa-whatsapp"></i> Buy
+                        </a>
+                    </div>
                 </div>
             </div>
             `;
             }).join('');
 
-            // Re-trigger observer if needed, or simple CSS animation works
+            // Attach listeners
+            document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    if (window.addToCart) {
+                        // Optimistic UI update could happen here
+                        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+                        await window.addToCart(btn.dataset.id);
+                        // No need to manually update text, event will trigger re-render
+                    }
+                });
+            });
+
             document.querySelectorAll('.product-card').forEach(el => {
-                el.style.opacity = '1'; // Ensure they are visible if CSS fade-up is used
+                el.style.opacity = '1';
             });
         }
 
         // Event Listeners
         categorySelect.addEventListener('change', loadProducts);
         searchInput.addEventListener('input', () => {
-            // Debounce could be added here
             loadProducts();
         });
 

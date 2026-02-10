@@ -109,6 +109,109 @@ def submit_contact():
     
     return jsonify({'success': 'Message sent successfully!'})
 
+# --- Cart & Checkout Routes ---
+
+def get_session_id():
+    """Get or create a session ID for guest users"""
+    if 'session_id' not in session:
+        import uuid
+        session['session_id'] = str(uuid.uuid4())
+    return session['session_id']
+
+@app.route('/api/cart', methods=['GET'])
+def get_cart():
+    session_id = get_session_id()
+    conn = get_db_connection()
+    cart_items = conn.execute('''
+        SELECT c.id, c.quantity, c.product_id, p.name, p.image_url, p.description, p.price, p.category
+        FROM cart_items c
+        JOIN products p ON c.product_id = p.id
+        WHERE c.session_id = ?
+    ''', (session_id,)).fetchall()
+    conn.close()
+    
+    items = [dict(row) for row in cart_items]
+    return jsonify(items)
+
+@app.route('/api/cart/add', methods=['POST'])
+def add_to_cart():
+    session_id = get_session_id()
+    data = request.json
+    product_id = data.get('product_id')
+    
+    conn = get_db_connection()
+    # Check if item exists
+    item = conn.execute('SELECT * FROM cart_items WHERE session_id = ? AND product_id = ?', 
+                        (session_id, product_id)).fetchone()
+    
+    if item:
+        conn.execute('UPDATE cart_items SET quantity = quantity + 1 WHERE id = ?', (item['id'],))
+    else:
+        conn.execute('INSERT INTO cart_items (session_id, product_id) VALUES (?, ?)', 
+                     (session_id, product_id))
+    
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True})
+
+@app.route('/api/cart/remove', methods=['POST'])
+def remove_from_cart():
+    session_id = get_session_id()
+    data = request.json
+    cart_item_id = data.get('id')
+    
+    conn = get_db_connection()
+    conn.execute('DELETE FROM cart_items WHERE id = ? AND session_id = ?', (cart_item_id, session_id))
+    conn.commit()
+    conn.close()
+    return jsonify({'success': True})
+
+@app.route('/cart')
+def view_cart():
+    return render_template('cart.html')
+
+@app.route('/checkout')
+def checkout():
+    return render_template('checkout.html')
+
+@app.route('/api/checkout', methods=['POST'])
+def process_checkout():
+    session_id = get_session_id()
+    data = request.json
+    
+    name = data.get('name')
+    phone = data.get('phone')
+    address = data.get('address')
+    
+    if not name or not phone or not address:
+        return jsonify({'error': 'Missing required fields'}), 400
+        
+    conn = get_db_connection()
+    cart_items = conn.execute('SELECT * FROM cart_items WHERE session_id = ?', (session_id,)).fetchall()
+    
+    if not cart_items:
+        conn.close()
+        return jsonify({'error': 'Cart is empty'}), 400
+        
+    # Create Order
+    cur = conn.cursor()
+    cur.execute('INSERT INTO orders (name, phone, address, total_amount, status) VALUES (?, ?, ?, ?, ?)',
+                (name, phone, address, 0, 'Pending')) # Total amount 0 for now
+    order_id = cur.lastrowid
+    
+    # Move items to order_items and clear cart
+    for item in cart_items:
+        # Fetch Product details if needed, but we just link IDs
+        # Price is missing from Product, assuming 0.
+        cur.execute('INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)',
+                    (order_id, item['product_id'], item['quantity'], 0))
+                    
+    conn.execute('DELETE FROM cart_items WHERE session_id = ?', (session_id,))
+    conn.commit()
+    conn.close()
+    
+    return jsonify({'success': True, 'order_id': order_id})
+
 # --- Admin Panel ---
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -155,14 +258,24 @@ def admin():
         
     enquiries = conn.execute('SELECT * FROM enquiries ORDER BY created_at DESC').fetchall()
     products = conn.execute('SELECT * FROM products ORDER BY created_at DESC').fetchall()
+    orders = conn.execute('SELECT * FROM orders ORDER BY created_at DESC').fetchall()
     conn.close()
-    return render_template('admin.html', enquiries=enquiries, products=products)
+    return render_template('admin.html', enquiries=enquiries, products=products, orders=orders)
 
 @app.route('/admin/delete_enquiry/<int:id>', methods=['POST'])
 @login_required
 def delete_enquiry(id):
     conn = get_db_connection()
     conn.execute('DELETE FROM enquiries WHERE id = ?', (id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('admin'))
+
+@app.route('/admin/delete_product/<int:id>', methods=['POST'])
+@login_required
+def delete_product(id):
+    conn = get_db_connection()
+    conn.execute('DELETE FROM products WHERE id = ?', (id,))
     conn.commit()
     conn.close()
     return redirect(url_for('admin'))

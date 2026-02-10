@@ -1,71 +1,163 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block title %}Admin Dashboard - RR Light House{% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - RR Light House</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
 
-{% block content %}
-<section class="admin-section section-padding">
-    <div class="container">
-        <div class="admin-header">
-            <h2>Admin Dashboard</h2>
-            <div class="admin-actions">
-                <button class="btn" onclick="document.getElementById('add-product-modal').style.display='flex'">+ Add
-                    Product</button>
-                <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+<body class="admin-body">
+
+    <div class="admin-wrapper">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="admin-sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-bolt" style="color: var(--admin-accent);"></i>
+                <h2>RR Admin</h2>
             </div>
-        </div>
+            <ul class="sidebar-nav">
+                <li><a href="#dashboard" class="active"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+                <li><a href="#orders"><i class="fa-solid fa-shopping-cart"></i> Orders</a></li>
+                <li><a href="#products"><i class="fa-solid fa-box"></i> Products</a></li>
+                <li><a href="#inquiries"><i class="fa-solid fa-envelope"></i> Inquiries</a></li>
+                <li><a href="#settings"><i class="fa-solid fa-cog"></i> Settings</a></li>
+                <li style="margin-top: 20px;"><a href="{{ url_for('logout') }}" style="color: #E74C3C;"><i
+                            class="fa-solid fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
 
-        <!-- Dashboard Tabs -->
-        <div class="dashboard-grid">
+        <!-- Main Content -->
+        <main class="admin-content" id="admin-content">
+            <div class="top-bar">
+                <button class="menu-toggle" id="menu-toggle"><i class="fa-solid fa-bars"></i></button>
+                <div class="user-info">
+                    <span>Welcome, Admin</span>
+                </div>
+            </div>
 
-            <!-- Enquiries Section -->
-            <div class="dashboard-card">
-                <h3>Latest Enquiries</h3>
-                <div class="table-responsive">
-                    <table class="admin-table">
+            <!-- DASHBOARD TAB -->
+            <section id="dashboard" class="content-section active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon bg-blue"><i class="fa-solid fa-shopping-bag"></i></div>
+                        <div class="stat-info">
+                            <h3>{{ orders|length if orders else 0 }}</h3>
+                            <p>Total Orders</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-yellow"><i class="fa-solid fa-box-open"></i></div>
+                        <div class="stat-info">
+                            <h3>{{ products|length if products else 0 }}</h3>
+                            <p>Products</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon bg-green"><i class="fa-solid fa-users"></i></div>
+                        <div class="stat-info">
+                            <h3>{{ enquiries|length if enquiries else 0 }}</h3>
+                            <p>Inquiries</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>Inquiry Trends</h3>
+                        <div style="height: 300px;"><canvas id="inquiryChart"></canvas></div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>Product Categories</h3>
+                        <div style="height: 300px;"><canvas id="productChart"></canvas></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ORDERS TAB -->
+            <section id="orders" class="content-section">
+                <div class="section-header">
+                    <h2>Recent Orders</h2>
+                </div>
+                <div class="flat-table-wrapper">
+                    <table class="flat-table">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Contact</th>
-                                <th>Message</th>
-                                <th>Date</th>
-                                <th>Action</th>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Address</th>
+                                <th>Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for item in enquiries %}
+                            {% for order in orders %}
                             <tr>
-                                <td>{{ item['name'] }}</td>
+                                <td>#{{ order['id'] }}</td>
                                 <td>
-                                    <small>{{ item['email'] }}</small><br>
-                                    <small>{{ item['phone'] }}</small>
+                                    <strong>{{ order['name'] }}</strong><br>
+                                    <small>{{ order['phone'] }}</small>
                                 </td>
-                                <td>{{ item['message'] }}</td>
-                                <td>{{ item['created_at'] }}</td>
+                                <td>{{ order['address'] }}</td>
+                                <td><span class="status-badge status-pending">{{ order['status'] }}</span></td>
                                 <td>
-                                    <form action="{{ url_for('delete_enquiry', id=item['id']) }}" method="POST"
-                                        onsubmit="return confirm('Are you sure you want to delete this enquiry?');"
-                                        style="display:inline;">
-                                        <button type="submit" class="btn-sm btn-danger" aria-label="Delete">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
-                                    </form>
+                                    <button class="btn-icon"><i class="fa-solid fa-eye"></i></button>
                                 </td>
                             </tr>
                             {% else %}
                             <tr>
-                                <td colspan="4" class="text-center">No enquiries yet.</td>
+                                <td colspan="5" style="text-align:center;">No orders found.</td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </section>
 
-            <!-- Products Section -->
-            <div class="dashboard-card">
-                <h3>Product Inventory</h3>
-                <div class="table-responsive">
-                    <table class="admin-table">
+            <!-- PRODUCTS TAB -->
+            <section id="products" class="content-section">
+                <div class="section-header">
+                    <h2>Products</h2>
+                    <button class="btn-flat"
+                        onclick="document.getElementById('add-product-form').style.display = document.getElementById('add-product-form').style.display === 'block' ? 'none' : 'block'">+
+                        Add Product</button>
+                </div>
+
+                <!-- Add Product Form (Hidden by default) -->
+                <div id="add-product-form"
+                    style="display:none; background:#fff; padding:20px; border-radius:8px; margin-bottom:20px; box-shadow:var(--shadow-sm);">
+                    <h3>Add New Product</h3>
+                    <form method="POST" action="{{ url_for('admin') }}" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label>Product Name</label>
+                            <input type="text" name="name" class="flat-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select name="category" class="flat-select">
+                                <option value="LED Lights">LED Lights</option>
+                                <option value="Fancy Lights">Fancy Lights</option>
+                                <option value="Fans">Fans</option>
+                                <option value="Switches">Switches</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea name="description" class="flat-textarea" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn-flat">Save Product</button>
+                    </form>
+                </div>
+
+                <div class="flat-table-wrapper">
+                    <table class="flat-table">
                         <thead>
                             <tr>
                                 <th>Image</th>
@@ -78,216 +170,77 @@
                             {% for product in products %}
                             <tr>
                                 <td>
-                                    <div class="table-img">
-                                        {% if product['image_url'] and 'uploads/' in product['image_url'] %}
-                                        <img src="{{ url_for('static', filename=product['image_url']) }}" alt="prod"
-                                            style="width:100%; height:100%; object-fit:cover;">
-                                        {% else %}
-                                        <i class="fa-solid fa-box"></i>
-                                        {% endif %}
-                                    </div>
+                                    {% if product['image_url'] %}
+                                    <img src="{{ url_for('static', filename=product['image_url']) if not product['image_url'].startswith('http') else product['image_url'] }}"
+                                        alt="img" width="40" height="40" style="border-radius:4px; object-fit:cover;">
+                                    {% else %}
+                                    <div style="width:40px; height:40px; background:#eee; border-radius:4px;"></div>
+                                    {% endif %}
                                 </td>
                                 <td>{{ product['name'] }}</td>
-                                <td><span class="badge">{{ product['category'] }}</span></td>
-                                <td><button class="btn-sm"><i class="fa-solid fa-trash"></i></button></td>
-                            </tr>
-                            {% else %}
-                            <tr>
-                                <td colspan="4" class="text-center">No products added.</td>
+                                <td>{{ product['category'] }}</td>
+                                <td>
+                                    <form action="{{ url_for('delete_product', id=product['id']) }}" method="POST"
+                                        onsubmit="return confirm('Delete this product?');" style="display:inline;">
+                                        <button class="btn-icon delete"><i class="fa-solid fa-trash"></i></button>
+                                    </form>
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div>
+            </section>
+
+            <!-- INQUIRIES TAB -->
+            <section id="inquiries" class="content-section">
+                <div class="section-header">
+                    <h2>Inquiries</h2>
+                </div>
+                <div class="flat-table-wrapper">
+                    <table class="flat-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Contact</th>
+                                <th>Message</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in enquiries %}
+                            <tr>
+                                <td>{{ item['name'] }}</td>
+                                <td>{{ item['phone'] }}<br><small>{{ item['email'] }}</small></td>
+                                <td>{{ item['message'] }}</td>
+                                <td>
+                                    <form action="{{ url_for('delete_enquiry', id=item['id']) }}" method="POST"
+                                        onsubmit="return confirm('Delete this inquiry?');">
+                                        <button class="btn-icon delete"><i class="fa-solid fa-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- SETTINGS TAB -->
+            <section id="settings" class="content-section">
+                <div class="section-header">
+                    <h2>Settings</h2>
+                </div>
+                <div style="background:#fff; padding:20px; border-radius:8px;">
+                    <p>Settings are currently managed via config files.</p>
+                </div>
+            </section>
+
+        </main>
     </div>
-</section>
 
-<!-- Add Product Modal -->
-<div id="add-product-modal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="document.getElementById('add-product-modal').style.display='none'">&times;</span>
-        <h2>Add New Product</h2>
-        <form method="POST" action="{{ url_for('admin') }}" enctype="multipart/form-data">
-            <div class="form-group">
-                <label>Product Name</label>
-                <input type="text" name="name" required>
-            </div>
-            <div class="form-group">
-                <label>Category</label>
-                <select name="category">
-                    <option value="LED Lights">LED Lights</option>
-                    <option value="Tube Lights">Tube Lights</option>
-                    <option value="Fancy Lights">Fancy Lights</option>
-                    <option value="Switches">Switches</option>
-                    <option value="Wires">Wires</option>
-                    <option value="Fans">Fans</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Product Image</label>
-                <input type="file" name="image" accept="image/*">
-            </div>
-            <div class="form-group">
-                <label>Description</label>
-                <textarea name="description" rows="3"></textarea>
-            </div>
-            <button type="submit" class="btn">Add Product</button>
-        </form>
-    </div>
-</div>
+    <!-- JS -->
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+</body>
 
-<style>
-    .admin-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-    }
-
-    .dashboard-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
-
-    .dashboard-card {
-        background: var(--card-bg);
-        border-radius: 10px;
-        padding: 1.5rem;
-        box-shadow: var(--shadow);
-    }
-
-    .dashboard-card h3 {
-        margin-bottom: 1rem;
-        color: var(--primary);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        padding-bottom: 0.5rem;
-    }
-
-    .admin-table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .admin-table th,
-    .admin-table td {
-        padding: 0.8rem;
-        text-align: left;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        font-size: 0.9rem;
-    }
-
-    .btn-sm {
-        padding: 5px 10px;
-        font-size: 0.8rem;
-        border-radius: 4px;
-        border: none;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    .btn-danger {
-        background: #ff4b4b;
-        color: white;
-    }
-
-    .badge {
-        background: rgba(255, 193, 7, 0.2);
-        color: var(--primary);
-        padding: 2px 8px;
-        border-radius: 4px;
-        font-size: 0.8rem;
-    }
-
-    .text-center {
-        text-align: center;
-    }
-
-    /* Modal */
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 2000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.7);
-        justify-content: center;
-        align-items: center;
-    }
-
-    .modal-content {
-        background: var(--card-bg);
-        padding: 2rem;
-        border-radius: 10px;
-        width: 90%;
-        max-width: 500px;
-        position: relative;
-        max-height: 90vh;
-        overflow-y: auto;
-    }
-
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 0.5rem;
-        color: var(--text-color);
-        font-weight: 500;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-        width: 100%;
-        padding: 10px;
-        border-radius: 5px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        background: var(--bg-color);
-        color: var(--text-color);
-        font-family: inherit;
-    }
-
-    .close {
-        position: absolute;
-        right: 1.5rem;
-        top: 1rem;
-        font-size: 1.5rem;
-        cursor: pointer;
-        z-index: 10;
-        color: var(--text-color);
-    }
-
-    @media (min-width: 992px) {
-        .dashboard-grid {
-            grid-template-columns: 1fr 1fr;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .modal-content {
-            width: 95%;
-            margin: 1rem;
-            padding: 1.5rem;
-        }
-
-        .admin-header {
-            flex-direction: column;
-            gap: 1rem;
-            text-align: center;
-        }
-
-        .admin-actions {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-        }
-    }
-</style>
-{% endblock %}
+</html>

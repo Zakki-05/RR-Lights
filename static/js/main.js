@@ -52,7 +52,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const html = document.documentElement;
 
     // Check LocalStorage
+    // Default to 'dark' if no theme is saved
     const savedTheme = localStorage.getItem('theme') || 'dark';
+
+    // Explicitly set if missing -> unlikely needed but safe
+    if (!localStorage.getItem('theme')) {
+        localStorage.setItem('theme', 'dark');
+    }
+
     html.setAttribute('data-theme', savedTheme);
     updateThemeIcons(savedTheme);
 

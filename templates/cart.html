@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}Shopping Cart - RR Light House{% endblock %}
+
+{% block content %}
+<section class="section-padding">
+    <div class="container">
+        <h2 class="section-title">Your Cart</h2>
+
+        <div id="cart-container">
+            <div class="table-responsive">
+                <table class="admin-table" id="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cart-items-body">
+                        <!-- Items will be loaded via JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="cart-summary" style="margin-top: 2rem; text-align: right;">
+                <h3>Total: <span id="cart-total">₹0.00</span></h3>
+                <div style="margin-top: 1rem;">
+                    <a href="{{ url_for('products') }}" class="btn btn-outline">Continue Shopping</a>
+                    <a href="{{ url_for('checkout') }}" class="btn" id="checkout-btn">Proceed to Checkout</a>
+                </div>
+            </div>
+        </div>
+
+        <div id="empty-cart-msg" style="display: none; text-align: center; padding: 3rem;">
+            <i class="fa-solid fa-cart-arrow-down" style="font-size: 3rem; color: var(--text-color); opacity: 0.5;"></i>
+            <h3 style="margin: 1rem 0;">Your cart is empty</h3>
+            <a href="{{ url_for('products') }}" class="btn">Browse Products</a>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const tbody = document.getElementById('cart-items-body');
+        const totalEl = document.getElementById('cart-total');
+        const emptyMsg = document.getElementById('empty-cart-msg');
+        const cartContainer = document.getElementById('cart-container');
+
+        try {
+            const response = await fetch('/api/cart');
+            const items = await response.json();
+
+            if (items.length === 0) {
+                cartContainer.style.display = 'none';
+                emptyMsg.style.display = 'block';
+                return;
+            }
+
+            let total = 0;
+            tbody.innerHTML = items.map(item => {
+                // Mock price if 0 (handling dev data)
+                const price = item.price || 999;
+                const itemTotal = price * item.quantity;
+                total += itemTotal;
+
+                return `
+                <tr>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <img src="${item.image_url ? '/static/' + item.image_url : ''}" 
+                                 alt="${item.name}" 
+                                 style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
+                            <div>
+                                <strong>${item.name}</strong><br>
+                                <small>${item.category}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>₹${price}</td>
+                    <td>${item.quantity}</td>
+                    <td>₹${itemTotal}</td>
+                    <td>
+                        <button class="btn-sm btn-danger remove-btn" data-id="${item.id}">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+            }).join('');
+
+            totalEl.textContent = '₹' + total.toFixed(2);
+
+            // Remove Listeners
+            document.querySelectorAll('.remove-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    if (!confirm('Remove this item?')) return;
+
+                    const id = btn.dataset.id;
+                    await fetch('/api/cart/remove', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id })
+                    });
+                    location.reload(); // Simple reload to refresh state
+                });
+            });
+
+        } catch (e) {
+            console.error(e);
+        }
+    });
+</script>
+{% endblock %}

@@ -86,10 +86,20 @@
                         <i class="fa-solid fa-sun"></i>
                     </button>
                 </li>
+                <li>
+                    <a href="{{ url_for('view_cart') }}" class="cart-icon-link" aria-label="View Cart">
+                        <i class="fa-solid fa-shopping-cart"></i>
+                        <span class="cart-count badge">0</span>
+                    </a>
+                </li>
             </ul>
 
             <!-- Mobile Toggle -->
             <div class="mobile-controls">
+                <a href="{{ url_for('view_cart') }}" class="cart-icon-mobile" aria-label="View Cart">
+                    <i class="fa-solid fa-shopping-cart"></i>
+                    <span class="cart-count badge" style="font-size: 0.7rem; padding: 2px 5px;">0</span>
+                </a>
                 <button class="theme-btn-mobile-nav" aria-label="Toggle Dark Mode">
                     <i class="fa-solid fa-sun"></i>
                 </button>
@@ -112,7 +122,13 @@
             <li><a href="{{ url_for('products') }}">Products</a></li>
             <li><a href="{{ url_for('services') }}">Services</a></li>
             <li><a href="{{ url_for('contact') }}">Contact</a></li>
+            {% if session.get('logged_in') %}
+            <li><a href="{{ url_for('admin') }}">Admin Panel <i class="fa-solid fa-gauge"></i></a></li>
+            <li><a href="{{ url_for('logout') }}" style="color: var(--admin-danger);">Logout <i
+                        class="fa-solid fa-sign-out-alt"></i></a></li>
+            {% else %}
             <li><a href="{{ url_for('admin') }}">Admin Login <i class="fa-solid fa-user-shield"></i></a></li>
+            {% endif %}
             <li class="mobile-theme-item">
                 <button class="theme-btn-mobile" aria-label="Toggle Dark Mode">
                     <span>Theme</span> <i class="fa-solid fa-sun"></i>
