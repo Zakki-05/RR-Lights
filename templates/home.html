@@ -1,0 +1,329 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - RR Light House{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container hero-content">
+        <div class="hero-text fade-up">
+            <h1>Illuminating Your World With <span class="highlight">Excellence</span></h1>
+            <p>Premium LED lights, electrical accessories, and modern fixtures for your home and business.</p>
+            <div class="hero-btns">
+                <a href="{{ url_for('products') }}" class="btn">Explore Products</a>
+                <a href="{{ url_for('contact') }}" class="btn btn-outline">Contact Us</a>
+            </div>
+        </div>
+        <div class="hero-image scale-in">
+            <!-- Hero Image -->
+            <!-- Dark Theme (Default) -->
+            <img src="{{ url_for('static', filename='images/chandelier.png') }}" alt="Luxury Chandelier"
+                class="floating-img hero-img-dark">
+            <!-- Light Theme -->
+            <img src="{{ url_for('static', filename='images/chandelier-01.jpg') }}" alt="Modern Pendant Light"
+                class="floating-img hero-img-light">
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features section-padding">
+    <div class="container">
+        <h2 class="section-title fade-up">Why Choose Us?</h2>
+        <div class="features-grid">
+            <div class="feature-card fade-up">
+                <div class="icon-box"><i class="fa-solid fa-star"></i></div>
+                <h3>Premium Quality</h3>
+                <p>We stock only the best brands known for durability and performance.</p>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="icon-box"><i class="fa-solid fa-tag"></i></div>
+                <h3>Best Prices</h3>
+                <p>Wholesale prices for retail customers. Unbeatable value.</p>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="icon-box"><i class="fa-solid fa-truck-fast"></i></div>
+                <h3>Fast Delivery</h3>
+                <p>Quick and reliable delivery services across Pernambut.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products Preview -->
+<section class="section-padding" style="background: var(--card-bg);">
+    <div class="container">
+        <h2 class="section-title fade-up">New Arrivals</h2>
+        <div class="features-grid">
+            <div class="feature-card fade-up">
+                <img src="{{ url_for('static', filename='images/led_bulb.png') }}" alt="LED Bulb"
+                    style="width:100%; height:200px; object-fit:contain; margin-bottom:1rem;">
+                <h3>Smart LED Bulb</h3>
+                <a href="{{ url_for('products') }}" class="btn-sm" style="margin-top:10px; display:inline-block;">View
+                    Details</a>
+            </div>
+            <div class="feature-card fade-up">
+                <img src="{{ url_for('static', filename='images/ceiling_fan.png') }}" alt="Ceiling Fan"
+                    style="width:100%; height:200px; object-fit:contain; margin-bottom:1rem;">
+                <h3>Designer Fan</h3>
+                <a href="{{ url_for('products') }}" class="btn-sm" style="margin-top:10px; display:inline-block;">View
+                    Details</a>
+            </div>
+            <div class="feature-card fade-up">
+                <img src="{{ url_for('static', filename='images/switch_board.png') }}" alt="Switches"
+                    style="width:100%; height:200px; object-fit:contain; margin-bottom:1rem;">
+                <h3>Modular Switches</h3>
+                <a href="{{ url_for('products') }}" class="btn-sm" style="margin-top:10px; display:inline-block;">View
+                    Details</a>
+            </div>
+        </div>
+        <div style="text-align:center; margin-top:2rem;">
+            <a href="{{ url_for('products') }}" class="btn">View All Products</a>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="section-padding">
+    <div class="container">
+        <h2 class="section-title fade-up">What Our Customers Say</h2>
+        <div class="features-grid">
+            <div class="feature-card fade-up">
+                <div class="icon-box"
+                    style="background:none; color:var(--primary); font-size:1rem; width:auto; height:auto; margin-bottom:1rem;">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <p style="font-style:italic;">"Excellent quality lights! I bought chandeliers for my new house and they
+                    look stunning. Highly recommended."</p>
+                <h4 style="margin-top:1rem; color:var(--primary);">- Rajesh Kumar</h4>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="icon-box"
+                    style="background:none; color:var(--primary); font-size:1rem; width:auto; height:auto; margin-bottom:1rem;">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <p style="font-style:italic;">"Best electrical shop in Pernambut. They have everything from wires to
+                    fancy switches at wholesale prices."</p>
+                <h4 style="margin-top:1rem; color:var(--primary);">- Priya S.</h4>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="icon-box"
+                    style="background:none; color:var(--primary); font-size:1rem; width:auto; height:auto; margin-bottom:1rem;">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                </div>
+                <p style="font-style:italic;">"Very helpful staff. They guided me to choose the right fans for my
+                    office. Fast delivery too."</p>
+                <h4 style="margin-top:1rem; color:var(--primary);">- Ahmed Khan</h4>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Visit Us CTA -->
+<section class="section-padding" style="background: var(--card-bg); text-align: center;">
+    <div class="container">
+        <h2 class="section-title fade-up">Visit Our Showroom</h2>
+        <p class="fade-up" style="max-width: 600px; margin: 0 auto 2rem; color: #8892b0;">Come experience our lighting
+            collection in person. We are located in the heart of Pernambut.</p>
+        <div class="fade-up">
+            <a href="https://maps.google.com" target="_blank" class="btn"><i class="fa-solid fa-location-dot"></i> Get
+                Directions</a>
+            <a href="tel:+919876543210" class="btn btn-outline" style="margin-left: 1rem;"><i
+                    class="fa-solid fa-phone"></i> Call Now</a>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* --- Theme Based Hero Image Switching --- */
+    .hero-img-light {
+        display: none !important;
+    }
+
+    .hero-img-dark {
+        display: block !important;
+    }
+
+    /* When light theme is active */
+    :root[data-theme="light"] .hero-img-dark {
+        display: none !important;
+    }
+
+    :root[data-theme="light"] .hero-img-light {
+        display: block !important;
+    }
+
+    /* Hero Styles */
+    .hero {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        padding: 2rem 0;
+    }
+
+    .hero-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        align-items: center;
+    }
+
+    .hero-text h1 {
+        font-size: 3.5rem;
+        line-height: 1.2;
+        margin-bottom: 1rem;
+    }
+
+    .hero-text .highlight {
+        color: var(--primary);
+    }
+
+    .hero-text p {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        color: #8892b0;
+        max-width: 500px;
+    }
+
+    .hero-btns {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn-outline {
+        background: transparent;
+        border: 2px solid var(--primary);
+        color: var(--text-color);
+    }
+
+    .btn-outline:hover {
+        background: var(--primary);
+        color: #000;
+    }
+
+    .img-placeholder {
+        width: 100%;
+        height: 400px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 5rem;
+        color: var(--primary);
+    }
+
+    /* Animations */
+    .fade-up {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s ease;
+    }
+
+    .scale-in {
+        opacity: 0;
+        transform: scale(0.9);
+        transition: all 0.8s ease;
+    }
+
+    .animate-in {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    .section-padding {
+        padding: 5rem 0;
+    }
+
+    .section-title {
+        text-align: center;
+        margin-bottom: 3rem;
+        font-size: 2.5rem;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .feature-card {
+        background: var(--card-bg);
+        padding: 2rem;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: var(--shadow);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .icon-box {
+        width: 60px;
+        height: 60px;
+        background: rgba(255, 193, 7, 0.1);
+        color: var(--primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin: 0 auto 1.5rem;
+    }
+
+    .hero-image {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .floating-img {
+        width: 100%;
+        max-width: 500px;
+        filter: drop-shadow(0 0 20px rgba(255, 193, 7, 0.3));
+        animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-20px);
+        }
+
+        100% {
+            transform: translateY(0px);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero-content {
+            grid-template-columns: 1fr;
+            text-align: center;
+        }
+
+        .hero-text h1 {
+            font-size: 2.5rem;
+        }
+
+        .hero-btns {
+            justify-content: center;
+        }
+
+        .hero-image {
+            order: -1;
+            margin-bottom: 2rem;
+        }
+
+        .floating-img {
+            max-width: 300px;
+            /* Smaller image on mobile */
+        }
+    }
+</style>
+{% endblock %}

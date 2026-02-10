@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Page Not Found - RR Light House{% endblock %}
+
+{% block content %}
+<section class="section-padding text-center"
+    style="min-height: 60vh; display: flex; align-items: center; justify-content: center;">
+    <div class="container">
+        <h1 style="font-size: 6rem; color: var(--primary); margin-bottom: 1rem;">404</h1>
+        <h2 style="margin-bottom: 1.5rem;">Oops! Page Not Found</h2>
+        <p style="color: #8892b0; margin-bottom: 2rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+            The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
+        </p>
+        <a href="{{ url_for('home') }}" class="btn">
+            <i class="fa-solid fa-home"></i> Back to Home
+        </a>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us - RR Light House{% endblock %}
+
+{% block content %}
+<section class="section-padding container">
+    <div class="about-content fade-up">
+        <h1 class="section-title">About RR Light House</h1>
+        <div class="content-text">
+            <p class="lead">Lighting up lives in Pernambut since 2010.</p>
+            <p>What started as a small electrical supply store has grown into Pernambut's premier destination for
+                lighting and electrical solutions. At RR Light House, we don't just sell products; we provide
+                brightness, safety, and style for your homes and businesses.</p>
+        </div>
+
+        <!-- Mission & Vision -->
+        <div class="features-grid" style="margin-bottom: 4rem;">
+            <div class="feature-card fade-up">
+                <div class="icon-box"><i class="fa-solid fa-eye"></i></div>
+                <h3>Our Vision</h3>
+                <p>To be the most trusted household name for electrical solutions in the region, known for quality and
+                    innovation.</p>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="icon-box"><i class="fa-solid fa-bullseye"></i></div>
+                <h3>Our Mission</h3>
+                <p>To provide high-quality, energy-efficient, and affordable electrical products while maintaining
+                    exceptional customer service.</p>
+            </div>
+        </div>
+
+        <!-- Our Journey -->
+        <div class="journey-section fade-up"
+            style="background: var(--card-bg); padding: 2rem; border-radius: 15px; margin-bottom: 4rem;">
+            <h2 style="text-align:center; margin-bottom:1.5rem; color:var(--primary);">Our Journey</h2>
+            <p style="color: #8892b0; margin-bottom: 1rem;">
+                <strong>2010:</strong> Established as a small shop on Main Road with a focus on basic wiring and bulbs.
+            </p>
+            <p style="color: #8892b0; margin-bottom: 1rem;">
+                <strong>2015:</strong> Expanded our inventory to include decorative fancy lights and chandeliers.
+            </p>
+            <p style="color: #8892b0; margin-bottom: 1rem;">
+                <strong>2020:</strong> Partnered with major brands like Phillps, Havells, and GM to offer premium
+                products.
+            </p>
+            <p style="color: #8892b0;">
+                <strong>Today:</strong> We serve over 5000+ happy customers and continue to light up the future.
+            </p>
+        </div>
+
+        <!-- Values -->
+        <h2 class="section-title fade-up">Our Core Values</h2>
+        <div class="features-grid">
+            <div class="feature-card fade-up">
+                <h3>Integrity</h3>
+                <p>We believe in honest pricing and genuine products.</p>
+            </div>
+            <div class="feature-card fade-up">
+                <h3>Quality</h3>
+                <p>We never compromise on safety and durability.</p>
+            </div>
+            <div class="feature-card fade-up">
+                <h3>Service</h3>
+                <p>Customer satisfaction is our top priority.</p>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <span class="count">10+</span>
+                <span class="label">Years of Experience</span>
+            </div>
+            <div class="stat-box">
+                <span class="count">5000+</span>
+                <span class="label">Happy Customers</span>
+            </div>
+            <div class="stat-box">
+                <span class="count">500+</span>
+                <span class="label">Products</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .content-text {
+        max-width: 800px;
+        margin: 0 auto 3rem;
+        text-align: center;
+        font-size: 1.1rem;
+        color: #8892b0;
+    }
+
+    .lead {
+        font-size: 1.5rem;
+        color: var(--primary);
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .stats-grid {
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+        flex-wrap: wrap;
+        margin-top: 3rem;
+    }
+
+    .stat-box {
+        text-align: center;
+        padding: 2rem;
+        background: var(--card-bg);
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+        min-width: 200px;
+    }
+
+    .stat-box .count {
+        display: block;
+        font-size: 3rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-box .label {
+        color: var(--text-color);
+    }
+</style>
+{% endblock %}
