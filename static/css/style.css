@@ -24,13 +24,13 @@
     /* Lighter Champagne Gold */
     --primary-hover: #D4AF37;
     /* Standard Gold */
-    --bg-color: #ffffff;
+    --bg-color: #ece0e0fc;
     /* Pure White */
     --text-color: #222222;
     /* Soft Black */
-    --card-bg: #fcfcfc;
+    --card-bg: #ece0e0fc;
     /* Off-White */
-    --nav-bg: rgba(255, 255, 255, 0.99);
+    --nav-bg: #ece0e0fc;
     /* Opaque White */
     --shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
 }
@@ -66,7 +66,6 @@
     }
 
     /* Hide Decorative Elements */
-    #bg-canvas-container,
     .floating-img {
         display: none !important;
     }
@@ -366,6 +365,7 @@ ul {
     border: none;
     cursor: pointer;
     transition: all 0.3s ease;
+    margin: 10px;
 }
 
 .btn:hover {
