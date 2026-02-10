@@ -61,6 +61,7 @@
 </head>
 
 <body>
+    <div id="bg-canvas-container"></div>
 
     <!-- Navigation -->
     <nav class="navbar" id="navbar">
@@ -126,7 +127,15 @@
         <i class="fa-solid fa-arrow-up"></i>
     </button>
 
+    <!-- Light Toggle Button -->
+    <button id="toggle-lights-btn" onclick="toggleChandelierLights()" aria-label="Toggle Chandelier Lights">
+        <i class="fa-solid fa-lightbulb"></i>
+    </button>
+
     <!-- Scripts -->
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="{{ url_for('static', filename='js/background_animation.js') }}?v=3"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     {% block scripts %}{% endblock %}
 </body>
