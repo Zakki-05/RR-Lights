@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (menuToggle) {
         menuToggle.addEventListener('click', () => {
             sidebar.classList.toggle('active');
-            // content.classList.toggle('blur'); // Optional blur effect
+            content.classList.toggle('blur'); // Optional blur effect
         });
     }
 

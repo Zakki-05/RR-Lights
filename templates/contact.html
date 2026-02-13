@@ -67,75 +67,7 @@
     </div>
 </section>
 
-<style>
-    .contact-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 3rem;
-    }
 
-    .info-item {
-        display: flex;
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-        align-items: flex-start;
-    }
-
-    .info-item i {
-        font-size: 1.5rem;
-        color: var(--primary);
-        background: rgba(255, 193, 7, 0.1);
-        padding: 1rem;
-        border-radius: 50%;
-    }
-
-    .map-container {
-        border-radius: 10px;
-        overflow: hidden;
-        margin-top: 2rem;
-        box-shadow: var(--shadow);
-    }
-
-    .contact-form-wrapper {
-        background: var(--card-bg);
-        padding: 2rem;
-        border-radius: 15px;
-        box-shadow: var(--shadow);
-    }
-
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 500;
-    }
-
-    .form-group input,
-    .form-group textarea {
-        width: 100%;
-        padding: 12px;
-        border-radius: 5px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        background: var(--bg-color);
-        color: var(--text-color);
-        font-family: inherit;
-    }
-
-    .form-group input:focus,
-    .form-group textarea:focus {
-        outline: none;
-        border-color: var(--primary);
-    }
-
-    @media (max-width: 768px) {
-        .contact-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
 {% endblock %}
 
 {% block scripts %}

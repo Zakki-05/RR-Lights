@@ -39,12 +39,13 @@ body.admin-body {
 
 /* --- Sidebar --- */
 .admin-sidebar {
-    width: 250px;
+    /* Adjusted for "Proper" mobile width */
+    width: min(280px, 85%);
     background: var(--admin-sidebar);
     color: var(--admin-sidebar-text);
     position: fixed;
     height: 100vh;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 1000;
 }
 
@@ -96,12 +97,10 @@ body.admin-body {
 /* --- Main Content --- */
 .admin-content {
     flex: 1;
-    margin-left: 250px;
+    margin-left: min(280px, 85%);
     padding: 0;
-    /* Removed padding for sticky header */
-    transition: margin 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     min-width: 0;
-    /* Critical for flex child overflow */
 }
 
 .top-bar {
@@ -349,15 +348,16 @@ body.admin-body {
 
 @media (max-width: 768px) {
     .admin-sidebar {
-        margin-left: -250px;
+        margin-left: calc(-1 * min(280px, 85%));
     }
 
     .admin-sidebar.active {
         margin-left: 0;
+        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.3);
     }
 
     .admin-content {
-        margin-left: 0;
+        margin-left: 0 !important;
     }
 
     .menu-toggle {
@@ -367,6 +367,35 @@ body.admin-body {
     .admin-content.blur {
         opacity: 0.5;
         pointer-events: none;
+        filter: blur(2px);
+    }
+
+    .top-bar {
+        padding: 10px 15px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .stat-card {
+        padding: 15px;
+    }
+
+    .stat-info h3 {
+        font-size: 1.5rem;
+    }
+
+    .top-bar h2 {
+        font-size: 1.1rem;
     }
 }
 
